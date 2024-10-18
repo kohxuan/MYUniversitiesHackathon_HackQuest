@@ -1,0 +1,493 @@
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" />
+
+  <title>Trustify</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;
+      background-color: #ffffff;
+    }
+
+    .button:hover {
+      background-color: #e2d5c7;
+    }
+
+    /* Modal Design */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-content h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    /* Modal visibility */
+    #voucherModal.show {
+      display: flex;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 5;
+    }
+
+    .modal-backdrop.show {
+      display: block;
+    }
+
+    .button,
+    #confirmUseButton,
+    #cancelButton {
+      cursor: pointer;
+      border-radius: 25px;
+      padding: 12px 24px;
+      background-color: #f4efe6;
+      color: #1c160c;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+      max-width: 95%;
+      margin: 10px auto;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div
+    class="relative flex size-full min-h-screen flex-col bg-[#FFFFFF] justify-between group/design-root overflow-x-hidden"
+    style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+    <div>
+      <div class="flex items-center bg-[#FFFFFF] p-4 pb-2 justify-between">
+
+        <!-- Back Button -->
+        <div class="text-[#1C160C] flex size-12 shrink-0 items-center" data-icon="ArrowLeft" data-size="24px"
+          data-weight="regular">
+          <a href="Main.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
+              viewBox="0 0 256 256">
+              <path
+                d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z">
+              </path>
+            </svg>
+          </a>
+        </div>
+        <h2 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em] flex-1">Profile</h2>
+      </div>
+
+      <!-- Profile Information Section -->
+      <div class="flex p-4 @container">
+        <div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+          <div class="flex gap-4">
+            <!-- Profile Photo -->
+            <div class="bg-center bg-no-repeat aspect-square rounded-full min-h-32 w-32"
+              style="width: 128px; height: 128px; display: flex; justify-content: center; align-items: center; background-color: rgb(242, 182, 2); border-radius: 50%;">
+              <svg width="100%" height="100%" viewBox="0 0 16 16" style="border-radius: 50%;">
+                <rect x="0" y="0" width="16" height="16"
+                  transform="translate(-4.6865175162859245 -2.135071161793135) rotate(346.3 8 8)" fill="#FA8E00"></rect>
+                <rect x="0" y="0" width="16" height="16"
+                  transform="translate(-7.448079604971012 1.8158573113146483) rotate(298.1 8 8)" fill="#2353E1"></rect>
+                <rect x="0" y="0" width="16" height="16"
+                  transform="translate(9.57407191641924 -6.247814235492595) rotate(483.0 8 8)" fill="#FB1849"></rect>
+              </svg>
+            </div>
+
+            <div class="flex flex-col justify-center">
+              <p class="text-[#1C160C] text-[18px] font-normal leading-tight tracking-[-0.015em];">
+                Wallet Address
+              </p>
+              <!-- Wallet Address -->
+              <p class="text-[#1C160C] text-[22px] font-normal leading-tight tracking-[-0.015em]">
+                <span id="walletAddress"></span>
+              </p>
+              <!-- Token Balance Section -->
+              <div class="flex items-center">
+                <p class="text-[#A18249] text-base font-normal leading-normal">
+                  TOKENS: <span id="customer-points">0</span>
+                </p>
+                <!-- Button to Link to Store Details -->
+                <a href="Voucher.html">
+                  <button
+                    class="text-[#A18249] text-base font-normal leading-normal bg-transparent px-4 py-2 rounded-lg flex items-center gap-2 -ml-4"
+                    style="margin-top: 1.5px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor"
+                      viewBox="0 0 256 256">
+                      <path
+                        d="M173.66,122.34,125.66,74.34a8,8,0,1,0-11.32,11.32L151.34,128l-37,37a8,8,0,1,0,11.32,11.32l48-48a8,8,0,0,0,0-11.32Z">
+                      </path>
+                    </svg>
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voucher Section -->
+      <h3 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Voucher Redeemed
+      </h3>
+      <div id="voucher-list" class="px-4 pb-2">No vouchers to be used yet.</div> <!-- Default message -->
+
+      <!-- Modal for confirming voucher use -->
+      <div id="voucherModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+          <span class="close-modal" onclick="closeModal()">×</span>
+          <h2>Use Voucher</h2>
+          <p id="voucherCodeDisplay" class="text-sm mb-4"></p>
+          <p id="countdownTimer" class="text-sm mb-4"></p>
+          <div class="flex justify-end gap-4">
+            <button id="confirmUseButton" class="px-4 py-2 bg-blue-500 text-white rounded"
+              onclick="confirmUseVoucher()">Yes, Use</button>
+            <button id="cancelButton" class="px-4 py-2 bg-gray-300 rounded" onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div id="modalBackdrop" class="modal-backdrop"></div>
+
+      <!-- Recent Purchase -->
+      <h3 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Recent Purchase</h3>
+      <div id="verificationDetails" class="flex items-center gap-4 bg-[#FFFFFF] px-4 min-h-[20px] py-2 justify-between">
+      </div>
+
+      <!-- Log Out -->
+      <div>
+        <div class="flex px-4 py-3 justify-center">
+          <button onclick="window.location.href='index.html'"
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-opacity-70 bg-[#F4EFE6] text-[#1C160C] text-base font-bold leading-normal tracking-[0.015em] border border-[#E9DFCE]">
+            <span class="truncate">Log Out</span>
+          </button>
+        </div>
+        <div class="h-5 bg-[#FFFFFF]"></div>
+      </div>
+    </div>
+
+    <script>
+      let ownerWithCode;
+      let contract;
+      let vouchers = [];
+      let selectedVoucherCode = null;
+      let activeVoucherCountdown = {};
+      let countdownEndTime = {};
+      let countdown; // Declare countdown globally
+
+      let provider, signer, userRegistration;
+
+      async function init() {
+        // Ensure that MetaMask is available
+        if (typeof window.ethereum !== 'undefined') {
+          // Request MetaMask access
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+          provider = new ethers.BrowserProvider(window.ethereum); // Initialize the provider
+          signer = await provider.getSigner();                    // Get the signer
+
+          const contractAddress = "0xb0d498Cd2D0EDE81c5857fd38837f3F5409FE385"; // Contract address
+          const abi = [
+            "function getCustomerPoints(address customer) public view returns (uint256)",
+            "function redeemVoucher(uint256 voucherType) public",
+            "function getRedeemedVouchers() public view returns (tuple(string code, uint256 voucherType, uint256 redeemedAt, bool isUsed)[])",
+            "function useVoucher(string memory voucherCode) public",
+            "function getVerificationCode(address owner) public view returns (string memory)",
+            "function getOwnerDetails(address user) public view returns (string memory name, string memory location, string memory contactNumber, string memory registrationNo, string memory ipfsHash)",
+            "function getVerificationCodeExpiry(address owner) public view returns (uint256)",
+            "function getOwnersForCustomer(address customer) public view returns (address[] memory)",
+            "function leaveReview(address ownerAddress, uint256 rating, string memory description) public",
+            "event ReviewSubmitted(address indexed customer, address indexed owner, uint256 rating, string description)",
+            "event VoucherRedeemed(address indexed customer, string voucherCode, uint256 pointsUsed, uint256 voucherType)"
+          ];
+
+          const walletAddress = await signer.getAddress();
+          document.getElementById("walletAddress").innerText = walletAddress;
+          // Initialize the contract
+          userRegistration = new ethers.Contract(contractAddress, abi, signer);
+
+          // Display user data
+          await displayCustomerPoints(); // Fetch and display customer points
+          await displayRedeemedVouchers(); // Fetch and display redeemed vouchers
+          await displayOwnerDetails(); // Display owner-related details
+        } else {
+          alert("Please install MetaMask to use this feature.");
+        }
+      }
+
+      async function displayCustomerPoints() {
+        try {
+          const walletAddress = await signer.getAddress();  // Use signer to get the wallet address
+          const points = await userRegistration.getCustomerPoints(walletAddress); // Fetch customer points
+          document.getElementById("customer-points").innerText = `${points}`;
+        } catch (error) {
+          console.error('Error fetching customer points:', error);
+        }
+      }
+
+      async function displayRedeemedVouchers() {
+        try {
+          vouchers = await userRegistration.getRedeemedVouchers();
+          const voucherList = document.getElementById('voucher-list');
+          voucherList.innerHTML = ''; // Clear the voucher list first
+
+          let hasVouchers = false; // Flag to check if there are any available vouchers
+
+          vouchers.forEach((voucher) => {
+            if (!voucher.isUsed) {
+              hasVouchers = true; // Set the flag to true if at least one voucher is available
+
+              // Ensure that the voucherType is a number
+              const voucherType = parseInt(voucher.voucherType, 10);
+
+              // Determine the display amount based on the voucher type
+              let voucherAmount;
+              switch (voucherType) {
+                case 1:
+                  voucherAmount = 'RM1';
+                  break;
+                case 2:
+                  voucherAmount = 'RM3';
+                  break;
+                case 3:
+                  voucherAmount = 'RM5';
+                  break;
+                case 4:
+                  voucherAmount = 'RM10';
+                  break;
+                default:
+                  voucherAmount = 'Unknown Amount';
+              }
+
+              voucherList.innerHTML += `
+                    <div class="bg-cover bg-center flex items-center rounded-xl p-4 shadow-lg m-4 relative h-32" 
+                        style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
+                        <div class="flex flex-col justify-between h-full text-white flex-grow">
+                            <p class="text-4xl font-bold leading-tight">${voucherAmount}</p>
+                            <p class="text-xs font-medium">Redeemed At: ${new Date(Number(voucher.redeemedAt) * 1000).toLocaleString()}</p>
+                        </div>
+                        <button id="voucherButton-${voucher.code}" class="flex items-center justify-center h-10 px-4 bg-[#F4EFE6] text-[#1C160C] rounded-full"
+                            onclick="showModal('${voucher.code}')">Use</button>
+                    </div>`;
+            }
+          });
+
+          // Show the "No vouchers to be used yet." message if there are no vouchers available
+          if (!hasVouchers) {
+            voucherList.innerHTML = '<p class="text-left text-gray-500">No vouchers to be used yet.</p>';
+          }
+        } catch (error) {
+          console.error('Error fetching redeemed vouchers:', error);
+          alert('Failed to fetch redeemed vouchers.');
+        }
+      }
+
+      async function displayOwnerDetails() {
+        try {
+          const customerAddress = await signer.getAddress(); // Get customer address
+          const ownersWithCodes = await userRegistration.getOwnersForCustomer(customerAddress);
+          let detailsHTML = ""; // Initialize empty HTML to accumulate owner details
+
+          if (ownersWithCodes.length > 0) {
+            for (const owner of ownersWithCodes) {
+              try {
+                const ownerDetails = await userRegistration.getOwnerDetails(owner);
+                const [name, location, contactNumber, registrationNo, ipfsHash] = ownerDetails;
+                const verificationCode = await userRegistration.getVerificationCode(owner);
+                const expiryTimestampBigInt = await userRegistration.getVerificationCodeExpiry(owner);
+                const expiryTimestamp = Number(expiryTimestampBigInt); // Ensure it's a number
+                const purchaseDate = new Date(expiryTimestamp * 1000); // Convert to Date object
+
+                detailsHTML += `
+                        <div class="flex items-center gap-4 bg-[#FFFFFF] px-4 min-h-[72px] py-2 justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-14"
+                                    style='background-image: url("${ipfsHash ? `https://gateway.pinata.cloud/ipfs/${ipfsHash}` : "https://cdn.usegalileo.ai/stability/b5c13285-2d3a-49c0-bdaa-92176bc4d007.png"}"); margin-left: -15px;'>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <p class="text-[#1C160C] text-base font-medium leading-normal line-clamp-1">${name}</p>
+                                    <p class="text-[#A18249] text-sm font-normal leading-normal line-clamp-2">${purchaseDate.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            </div>
+                            ${createReviewButton(owner, verificationCode)} <!-- Add the review button here -->
+                        `;
+              } catch (error) {
+                console.error(`Error getting details for owner ${owner}:`, error);
+                detailsHTML += `<p>Error retrieving details for owner ${owner}. See console for more information.</p>`;
+              }
+            }
+          }
+
+          // If no verification codes are available, show the default message
+          if (ownersWithCodes.length === 0) {
+            detailsHTML = '<p class="text-left text-gray-500">No verification codes issued by any owner yet.</p>';
+          }
+
+          document.getElementById("verificationDetails").innerHTML = detailsHTML;
+
+        } catch (error) {
+          console.error("Error in displayOwnerDetails:", error);
+          document.getElementById("verificationDetails").innerHTML = "<p class='text-center text-red-500'>Error retrieving owner details. See console for more information.</p>";
+        }
+      }
+
+      function createReviewButton(owner, verificationCode) {
+        return `
+    <div class="shrink-0 ml-auto">
+      <button
+        onclick="goToReviewPage('${verificationCode}')" class="leave-review-btn flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-medium leading-normal w-fit"
+        data-owner="${owner}" data-code="${verificationCode}">
+        <span class="truncate">Review</span>
+      </button>
+    </div>
+  `;
+      }
+
+      function goToReviewPage(verificationCode) {
+        // Redirect to index2.html with ownerAddress and verificationCode as query parameters
+        const url = `writeReview.html?code=${verificationCode}`;
+        window.location.href = url; // Redirect to new page
+      }
+
+      function showModal(voucherCode) {
+        selectedVoucherCode = voucherCode;
+        const voucher = vouchers.find(v => v.code === voucherCode);
+
+        if (activeVoucherCountdown[voucher.code]) {
+          // If the voucher is already in countdown, display the countdown view
+          document.getElementById("voucherCodeDisplay").innerText = `Voucher Code: ${voucher.code}`;
+          document.getElementById('confirmUseButton').style.display = 'none'; // Hide "Yes, Use"
+          document.getElementById('cancelButton').style.display = 'none'; // Hide "Cancel"
+
+          // Calculate the initial time left and format it before the interval starts
+          const timeLeft = countdownEndTime[voucher.code] - Math.floor(Date.now() / 1000);
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+          document.getElementById("countdownTimer").innerText = `Valid for: ${minutes}m ${seconds}s`;
+
+          updateCountdown(voucher.code); // Start the countdown interval
+        } else {
+          // Show the initial confirmation view if countdown hasn't started
+          document.getElementById("voucherCodeDisplay").innerText = '';
+          document.getElementById('confirmUseButton').style.display = 'inline'; // Show "Yes, Use"
+          document.getElementById('cancelButton').style.display = 'inline'; // Show "Cancel"
+          document.getElementById("countdownTimer").innerText = '';
+          clearInterval(countdown);
+        }
+
+        document.getElementById('voucherModal').classList.add('show');
+        document.getElementById('modalBackdrop').classList.add('show');
+      }
+
+
+      function closeModal() {
+        document.getElementById('voucherModal').classList.remove('show');
+        document.getElementById('modalBackdrop').classList.remove('show');
+        clearInterval(countdown);
+      }
+
+      async function confirmUseVoucher() {
+        try {
+          if (selectedVoucherCode) {
+            // Call the contract function to use the voucher
+            const tx = await userRegistration.useVoucher(selectedVoucherCode);
+            const receipt = await tx.wait();  // Wait for the transaction to be mined
+
+            console.log(`Voucher used: ${selectedVoucherCode}`, receipt);
+
+            // Update the modal UI to show that the voucher was used
+            document.getElementById("voucherCodeDisplay").innerText = `Voucher Code: ${selectedVoucherCode}`;
+            document.getElementById('confirmUseButton').style.display = 'none';  // Hide "Yes, Use"
+            document.getElementById('cancelButton').style.display = 'none';  // Hide "Cancel"
+
+            // Start the countdown (assuming this is for showing how long the voucher is valid after use)
+            startCountdown(900, selectedVoucherCode);
+
+            // Optionally, update the button in the voucher list to show that it's been used
+            const voucherButton = document.getElementById(`voucherButton-${selectedVoucherCode}`);
+            if (voucherButton) {
+              voucherButton.innerText = "View";  // Change button text to "View"
+            }
+          }
+        } catch (error) {
+          console.error("Error using voucher:", error);
+          alert("Error redeeming voucher. Please try again.");
+        }
+      }
+
+      function startCountdown(duration, voucherCode) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        countdownEndTime[voucherCode] = currentTime + duration;
+        activeVoucherCountdown[voucherCode] = true;
+
+        updateCountdown(voucherCode);
+      }
+
+      function updateCountdown(voucherCode) {
+        countdown = setInterval(() => {
+          const currentTime = Math.floor(Date.now() / 1000);
+          const timeLeft = countdownEndTime[voucherCode] - currentTime;
+
+          if (timeLeft > 0) {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById("countdownTimer").innerText = `Valid for: ${minutes}m ${seconds}s`;
+          } else {
+            clearInterval(countdown);
+            closeModal();
+
+            // Mark the voucher as used and refresh the voucher list
+            vouchers.find(v => v.code === voucherCode).isUsed = true;
+            activeVoucherCountdown[voucherCode] = false;
+            displayRedeemedVouchers();
+          }
+        }, 1000);
+      }
+
+      window.onload = init;
+    </script>
+
+</body>
+
+</html>

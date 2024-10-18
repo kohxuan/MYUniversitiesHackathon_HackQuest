@@ -1,0 +1,554 @@
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" />
+
+  <title>Trustify</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
+
+  <style>
+    .star {
+      width: 24px;
+      height: 24px;
+      fill: #ccc;
+      /* Default color for empty stars */
+      cursor: pointer;
+      /* Change the cursor on hover */
+      margin-right: 2px;
+      /* Space between stars */
+    }
+
+    .star.filled {
+      fill: gold;
+      /* Color for filled stars */
+    }
+
+    .star.half {
+      fill: gold;
+      /* Fill color for the left side of half star */
+      clip-path: inset(0 50% 0 0);
+      /* Clip right half */
+    }
+  </style>
+</head>
+
+<body>
+  <div
+    class="relative flex size-full min-h-screen flex-col bg-[#FFFFFF] justify-between group/design-root overflow-x-hidden"
+    style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+    <div>
+      <div class="flex items-center bg-[#FFFFFF] p-4 pb-2 justify-between">
+        <div class="flex items-center">
+          <button id="dynamicButton"
+            class="flex items-center cursor-pointer text-[#1C160C] bg-transparent hover:bg-[#F4EFE6] rounded-full p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" id="buttonIcon" width="22px" height="22px" fill="currentColor"
+              viewBox="0 0 24 24">
+              <path d="M10 2v2h8v16h-8v2h10v-20h-10zm-1 5l-7 5 7 5v-4h9v-2h-9v-4z" />
+            </svg>
+          </button>
+        </div>
+        <h2 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em] flex-1">Business Information</h2>
+        <div class="flex w-12 items-center justify-end">
+          <!-- Profile -->
+          <button onclick="redirectToProfile()"
+            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 bg-transparent text-[#1C160C] gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+            <div class="text-[#1C160C]" data-icon="UserCircle" data-size="24px" data-weight="regular">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
+                viewBox="0 0 256 256">
+                <path
+                  d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z">
+                </path>
+              </svg>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center p-4">
+        <div class="flex-shrink-0">
+          <img id="storeImage" class="w-32 h-32 bg-center bg-no-repeat bg-cover rounded-xl" alt="Store Image" />
+        </div>
+        <div class="flex-1 bg-[#FFFFFF] p-4 text-left pl-8">
+          <p id="businessName" class="text-[#1C160C] text-lg font-bold leading-normal"></p>
+          <p id="businessLocation" class="text-[#A18249] text-base font-normal"></p>
+          <p id="contactNumber" class="text-[#A18249] text-base font-normal"></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-x-8 gap-y-6 p-6">
+        <div class="flex flex-col gap-2">
+          <p id="owner-rating" class="text-[#1C160C] text-4xl font-black leading-tight tracking-[-0.033em]"></p>
+          <div class="flex gap-0.5" id="stars">
+            <!-- Stars will be dynamically generated here -->
+          </div>
+          <p id="noReviews" class="text-[#0b161e] text-base font-normal leading-normal"></p>
+        </div>
+        <div id="reviewBars"
+          class="grid min-w-[200px] max-w-[400px] flex-1 grid-cols-[20px_1fr_40px] items-center gap-y-3">
+        </div>
+      </div>
+      <div class="flex flex-col gap-8 overflow-x-hidden bg-[#f5f3f0] p-4">
+        <h3 class="text-[#0b161e] text-lg font-bold mt-8">Customer Reviews</h3>
+        <div id="reviewsContainer" class="flex flex-col gap-4">
+          <!-- Review cards will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="h-5 bg-[#f0f6f9]"></div>
+    </div>
+
+    <script>
+      let contract;
+      let allReviews = []; // Store all reviews globally
+      let ownerAddress;
+      let signer;
+
+      function getUserType() {
+        const userType = localStorage.getItem('userRole'); // Example of storing userType in local storage
+        return userType; // 'customer' or 'businessOwner'
+      }
+
+      function redirectToProfile() {
+        userRole = getUserType(); // Retrieve the user's role from local storage
+        console.log('Current User Role:', userRole); // Debugging line
+
+        if (userRole === 'customer') {
+          window.location.href = 'ProfileCust.html'; // Redirect to customer profile
+        } else if (userRole === 'businessOwner') {
+          window.location.href = 'ProfileBusiness.html'; // Redirect to business owner profile
+        } else {
+          console.error('Unknown user role:', userRole);
+          // Optionally handle unknown role if necessary
+        }
+      }
+
+      // Function to adjust button based on user type
+      function adjustButton() {
+        const userType = getUserType();
+        const button = document.getElementById('dynamicButton');
+        const icon = document.getElementById('buttonIcon');
+
+        if (userType === 'customer') {
+          // Change icon to left arrow for customers
+          icon.innerHTML = `
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      `;
+
+          // Change redirection URL to main.html for customers
+          button.onclick = function () {
+            window.location.href = 'main.html';
+          };
+        } else if (userType === 'businessOwner') {
+          // Keep the default icon for business owners
+          icon.innerHTML = `
+        <path d="M10 2v2h8v16h-8v2h10v-20h-10zm-1 5l-7 5 7 5v-4h9v-2h-9v-4z" />
+      `;
+
+          // Redirect to index.html for business owners
+          button.onclick = function () {
+            window.location.href = 'index.html';
+          };
+        }
+      }
+
+      async function init() {
+        // Retrieve the ownerAddress from the URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        ownerAddress = urlParams.get('ownerAddress');
+
+        console.log(ownerAddress);
+        if (!ownerAddress) {
+          console.warn('No owner address provided, using MetaMask account address instead.');
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          signer = await provider.getSigner();
+          ownerAddress = await signer.getAddress();
+          console.log('Using MetaMask Address:', ownerAddress);
+        } else {
+          console.log('Owner Address from URL:', ownerAddress);
+        }
+
+        const contractAddress = "0xb0d498Cd2D0EDE81c5857fd38837f3F5409FE385";
+        const abi = [
+          "function getOwnerDetails(address user) public view returns (string memory name, string memory location, string memory contactNumber, string memory regNumber, string memory ipfsHash)",
+          "function getAverageRating(address owner) public view returns (uint256)",
+          "function ownerReviewsCount(address owner) public view returns (uint256)",
+          "function getOwnerReviews(address owner) public view returns (tuple(address userAddress, uint256 rating, string description, uint256 timestamp)[] memory)"
+        ];
+
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+
+        // Create contract with signer
+        contract = new ethers.Contract(contractAddress, abi, signer);
+
+        // Debugging: log the contract to ensure it's defined
+        console.log('Contract:', contract);
+
+        // Fetch owner details
+        adjustButton();
+        await getOwnerDetails(ownerAddress);
+        await getOwnerRatingAndReviews(ownerAddress);
+        await updateReviewBars(ownerAddress);
+        await fetchReviews(ownerAddress);
+      }
+
+      // Fetch owner details like name, location, contact
+      async function getOwnerDetails(ownerAddress) {
+        try {
+          const [name, location, contactNumber, regNumber, ipfsHash] = await contract.getOwnerDetails(ownerAddress);
+
+          // Update the HTML with the fetched details
+          document.getElementById("businessName").textContent = name;
+          document.getElementById("businessLocation").textContent = location;
+          document.getElementById("contactNumber").textContent = contactNumber;
+
+          // Display the store image from IPFS
+          const ipfsGateway = "https://gateway.pinata.cloud/ipfs/";
+          document.getElementById("storeImage").src = ipfsGateway + ipfsHash;
+          console.log(ipfsHash);
+        } catch (error) {
+          console.error("Error fetching owner details:", error);
+        }
+      }
+
+      // Fetch average rating and number of reviews
+      async function getOwnerRatingAndReviews(ownerAddress) {
+        try {
+          // Fetch average rating
+          const averageRating = await contract.getAverageRating(ownerAddress);
+          const formattedRating = (Number(averageRating) / 10).toFixed(1);
+
+          // Fetch review count
+          const reviewCount = await contract.ownerReviewsCount(ownerAddress);
+
+          // Update the UI
+          const ratingElement = document.getElementById("owner-rating");
+          const reviewCountElement = document.getElementById("noReviews");
+
+          if (ratingElement) {
+            ratingElement.textContent = `${formattedRating}`;
+          } else {
+            console.warn("Rating element not found in the DOM");
+          }
+
+          if (reviewCountElement) {
+            reviewCountElement.textContent = `${reviewCount} Reviews`;
+          } else {
+            console.warn("Review count element not found in the DOM");
+          }
+
+          generateStars(formattedRating);
+        } catch (error) {
+          console.error("Error fetching rating and reviews:", error);
+
+          // Update UI to show error state
+          const ratingElement = document.getElementById("owner-rating");
+          if (ratingElement) {
+            ratingElement.textContent = "N/A (Error fetching data)";
+          }
+        }
+      }
+
+      // Function to generate star ratings
+      function generateStars(rating) {
+        const starsContainer = document.getElementById('stars');
+        starsContainer.innerHTML = ''; // Clear any existing stars
+
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          star.setAttribute("class", "star"); // Add base class
+
+          // Determine the star type based on the rating
+          if (i <= Math.floor(rating)) {
+            star.classList.add("filled"); // Full star
+          } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+            star.classList.add("half"); // Half star if rating has a decimal
+          }
+
+          // Create the star shape
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", "M12 .587l3.668 7.431 8.165 1.182-5.917 5.769 1.396 8.141L12 18.896l-7.312 3.84 1.396-8.141-5.917-5.769 8.165-1.182z");
+          star.appendChild(path);
+          starsContainer.appendChild(star);
+        }
+      }
+
+      async function updateReviewBars(ownerAddress) {
+        try {
+          // Fetch reviews for the given store owner
+          const reviews = await contract.getOwnerReviews(ownerAddress);
+          const totalReviews = reviews.length;
+
+          // Initialize counters for each rating (1 to 5 stars)
+          let ratingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+          // Loop through reviews and count how many fall into each rating category
+          reviews.forEach(review => {
+            if (review.rating >= 1 && review.rating <= 5) {
+              ratingCounts[review.rating] += 1;
+            }
+          });
+
+          // Clear previous content in the reviewBars container
+          const reviewBarsContainer = document.getElementById("reviewBars");
+          reviewBarsContainer.innerHTML = '';
+
+          // Update each rating's progress bar and percentage text
+          for (let i = 5; i >= 1; i--) {
+            const percentage = (ratingCounts[i] / totalReviews) * 100 || 0; // Calculate percentage
+
+            // Create rating label
+            const ratingLabel = document.createElement('p');
+            ratingLabel.className = "text-[#0b161e] text-sm font-normal leading-normal";
+            ratingLabel.textContent = i;
+
+            // Create progress bar container
+            const progressBarContainer = document.createElement('div');
+            progressBarContainer.className = "flex h-2 flex-1 overflow-hidden rounded-full bg-[#F4EFE6]";
+
+            // Create the inner progress bar
+            const progressBar = document.createElement('div');
+            progressBar.className = "rounded-full bg-[#A18249]";
+            progressBar.style.width = `${percentage}%`;
+
+            // Create percentage text
+            const percentageText = document.createElement('p');
+            percentageText.className = "text-[#3e7aa3] text-sm font-normal leading-normal text-right";
+            percentageText.textContent = `${percentage.toFixed(0)}%`;
+
+            // Append the progress bar to its container
+            progressBarContainer.appendChild(progressBar);
+
+            // Append all elements to the reviewBarsContainer
+            reviewBarsContainer.appendChild(ratingLabel);
+            reviewBarsContainer.appendChild(progressBarContainer);
+            reviewBarsContainer.appendChild(percentageText);
+          }
+        } catch (error) {
+          console.error("Error fetching or updating reviews:", error);
+        }
+      }
+
+      // Function to format the timestamp to "17 October 2024, 2:30 PM"
+      function formatDate(timestamp) {
+        // Check if the timestamp is in seconds (10 digits) and convert to milliseconds if necessary
+        if (String(timestamp).length === 10) {
+          timestamp = timestamp * 1000; // Convert seconds to milliseconds
+        }
+
+        const date = new Date(timestamp);
+
+        // Define month names for manual formatting
+        const monthNames = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Extract the day, month, and year
+        const day = date.getDate(); // Day of the month
+        const month = monthNames[date.getMonth()]; // Month name
+        const year = date.getFullYear(); // Year
+        const hours = date.getHours(); // Hours
+        const minutes = date.getMinutes(); // Minutes
+
+        // Format hours to 12-hour format and determine AM/PM
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+        const formattedMinutes = minutes < 10 ? '0' + minutes : minutes; // Add leading zero if needed
+
+        // Construct the formatted date string
+        return `${day} ${month} ${year}, ${formattedHours}:${formattedMinutes} ${ampm}`;
+      }
+
+      async function fetchReviews(ownerAddress) {
+        try {
+          const reviews = await contract.getOwnerReviews(ownerAddress);
+          console.log("Fetched reviews:", reviews);
+
+          // Check if reviews are indeed in the expected format
+          if (!Array.isArray(reviews)) {
+            console.warn("Reviews is not an array");
+            return;
+          }
+
+          // Map through Proxy objects and extract review details
+          const formattedReviews = reviews.map((review, index) => {
+            console.log(`Review ${index}:`, review); // Log each review
+
+            // Extract the properties from the Proxy object using the correct indices
+            return {
+              reviewer: review[0],      // Extract user address
+              rating: Number(review[1]), // Extract rating, converting BigInt to Number
+              description: review[2],      // Extract description
+              reviewTime: Number(review[3]) // Extract timestamp, converting BigInt to Number
+            };
+          });
+
+          displayReviews(formattedReviews);
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+        }
+      }
+
+      // Function to display reviews in the UI
+      async function displayReviews(reviews) {
+        allReviews = reviews; // Store the reviews globally for later access
+        const reviewsContainer = document.getElementById("reviewsContainer");
+        reviewsContainer.innerHTML = ""; // Clear previous reviews
+
+        // Sort reviews by timestamp in descending order
+        reviews.sort((a, b) => b.reviewTime - a.reviewTime); // b.reviewTime for descending order
+
+        // Create rating buttons
+        const ratingContainer = document.createElement("div");
+        ratingContainer.className = "flex gap-3 p-1 flex-wrap pr-4";
+
+        for (let i = 5; i >= 1; i--) {
+          const ratingButton = document.createElement("div");
+          ratingButton.className = "flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#e6daca] pl-4 pr-4";
+          ratingButton.innerHTML = `<p class="text-[#0b161e] text-sm font-medium leading-normal">${i}</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" class="text-[#A18249]" viewBox="0 0 256 256">
+                <path d="M128,18a10,10,0,0,1,9,5l29,59,65,10a10,10,0,0,1,5,17l-47,46,11,64a10,10,0,0,1-14,10l-58-30-58,30a10,10,0,0,1-14-10l11-64-47-46a10,10,0,0,1,5-17l65-10,29-59A10,10,0,0,1,128,18Z"></path>
+            </svg>`;
+
+          // Add click event listener to filter reviews
+          ratingButton.addEventListener("click", () => filterReviewsByRating(i));
+          ratingContainer.appendChild(ratingButton);
+        }
+
+        // Append rating buttons to the container
+        reviewsContainer.appendChild(ratingContainer);
+
+        // Display all reviews initially
+        renderReviews(reviews);
+      }
+
+      // Function to filter and display reviews by rating
+      function filterReviewsByRating(rating) {
+        const filteredReviews = allReviews.filter(review => review.rating === rating);
+        renderReviews(filteredReviews);
+      }
+
+      // Function to render reviews in the UI
+      function renderReviews(reviews) {
+        const reviewsContainer = document.getElementById("reviewsContainer");
+        reviewsContainer.innerHTML = ""; // Clear previous reviews
+
+        // Only create the rating buttons if they haven't been created yet
+        if (!document.getElementById("ratingContainer")) {
+          const ratingContainer = document.createElement("div");
+          ratingContainer.id = "ratingContainer"; // Set an ID to check later
+          ratingContainer.className = "flex gap-3 p-1 flex-wrap pr-4";
+
+          // Append rating buttons again
+          for (let i = 5; i >= 1; i--) {
+            const ratingButton = document.createElement("button");
+            ratingButton.className = "flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#e6daca] pl-4 pr-4 cursor-pointer transition duration-200 hover:bg-[#d2c1b4]"; // Add hover effects
+
+            ratingButton.innerHTML = `<p class="text-[#0b161e] text-sm font-medium leading-normal">${i}</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" class="text-[#A18249]" viewBox="0 0 256 256">
+                    <path d="M128,18a10,10,0,0,1,9,5l29,59,65,10a10,10,0,0,1,5,17l-47,46,11,64a10,10,0,0,1-14,10l-58-30-58,30a10,10,0,0,1-14-10l11-64-47-46a10,10,0,0,1,5-17l65-10,29-59A10,10,0,0,1,128,18Z"></path>
+                </svg>`;
+
+            // Add click event listener to filter reviews
+            ratingButton.addEventListener("click", () => filterReviewsByRating(i));
+            ratingContainer.appendChild(ratingButton);
+          }
+
+          // Append rating buttons to the container
+          reviewsContainer.prepend(ratingContainer); // Add the rating buttons at the top
+        }
+
+        // Check if there are reviews
+        if (reviews.length === 0) {
+          const noReviewsMessage = document.createElement("p");
+          noReviewsMessage.className = "text-[#0b161e] text-base font-medium leading-normal";
+          noReviewsMessage.textContent = "No reviews for this rating.";
+          reviewsContainer.appendChild(noReviewsMessage);
+
+          // Create and append the Reset button
+          const resetButton = document.createElement("button");
+          resetButton.className = "mt-4 bg-[#A18249] text-white font-medium py-2 px-4 rounded";
+          resetButton.textContent = "Reset to All Comments";
+
+          // Add click event to the Reset button
+          resetButton.addEventListener("click", () => renderReviews(allReviews)); // Show all reviews when clicked
+          reviewsContainer.appendChild(resetButton);
+
+          return; // Exit the function since there are no reviews
+        }
+
+        // Create and append review cards
+        reviews.forEach(review => {
+          const reviewCard = document.createElement("div");
+          reviewCard.className = "flex flex-col gap-3 bg-white shadow-md rounded-md p-4";
+
+          // User information
+          const reviewHeader = document.createElement("div");
+          reviewHeader.className = "flex items-center gap-3";
+
+          const avatar = document.createElement("div");
+          avatar.className = "bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10";
+          avatar.style.backgroundImage = `url("https://img.freepik.com/premium-photo/round-user-icon-isolated-white-background-3d-rendering_499459-408.jpg")`; // Update to user avatar URL if available
+
+          const userInfo = document.createElement("div");
+          userInfo.className = "flex-1";
+
+          const userName = document.createElement("p");
+          userName.className = "text-[#0b161e] text-base font-medium leading-normal";
+          userName.textContent = review.reviewer; // Access the reviewer address correctly
+          userName.style.fontSize = "0.90em";
+
+          // Star Rating
+          const starRating = document.createElement("div");
+          starRating.className = "flex gap-0.5 mt-1";
+
+          for (let i = 0; i < review.rating; i++) {
+            const star = document.createElement("div");
+            star.className = "text-[#1f93e0]";
+            star.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" class="text-[#A18249]" viewBox="0 0 256 256">
+                <path d="M128,18a10,10,0,0,1,9,5l29,59,65,10a10,10,0,0,1,5,17l-47,46,11,64a10,10,0,0,1-14,10l-58-30-58,30a10,10,0,0,1-14-10l11-64-47-46a10,10,0,0,1,5-17l65-10,29-59A10,10,0,0,1,128,18Z"></path>
+            </svg>`;
+            starRating.appendChild(star);
+          }
+
+          // Append elements
+          userInfo.appendChild(userName);
+          userInfo.appendChild(starRating);
+          reviewHeader.appendChild(avatar);
+          reviewHeader.appendChild(userInfo);
+          reviewCard.appendChild(reviewHeader);
+
+          // Review comment
+          const reviewComment = document.createElement("p");
+          reviewComment.className = "text-[#0b161e] text-base font-normal leading-normal";
+          reviewComment.textContent = review.description;
+
+          // Review date and time
+          const reviewDate = document.createElement("p");
+          reviewDate.className = "text-[#3e7aa3] text-sm font-normal leading-normal";
+          const timestamp = Number(review.reviewTime); // Ensure it's a number
+          reviewDate.textContent = formatDate(timestamp); // Pass the number directly
+
+          // Append to card
+          reviewCard.appendChild(reviewComment);
+          reviewCard.appendChild(reviewDate);
+
+          // Append card to the container
+          reviewsContainer.appendChild(reviewCard);
+        });
+      }
+
+      // Call the init function when the page loads
+      window.onload = init;
+
+    </script>
+
+</body>
+
+</html>
