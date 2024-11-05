@@ -192,7 +192,7 @@
                     localStorage.setItem('userRole', 'customer');
                     document.getElementById("message").innerText = "WELCOME CUSTOMER!";
                     setTimeout(() => {
-                        window.location.href = 'main.html';
+                        window.location.href = 'Main.html';
                     }, 2000);
                 } else if (isOwnerRegistered) {
                     localStorage.setItem('userRole', 'businessOwner');
@@ -245,7 +245,7 @@
                 closeModal(); // Close the modal after successful registration
 
                 // Redirect to the main page after successful registration
-                window.location.href = "main.html";
+                window.location.href = "Main.html";
             } catch (error) {
                 if (error.code === 'ACTION_REJECTED') {
                     // Handle the rejection error gracefully
