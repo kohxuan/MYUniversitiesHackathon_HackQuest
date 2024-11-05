@@ -1,7 +1,6 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
   <link rel="stylesheet" as="style" onload="this.rel='stylesheet'"
     href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" />
@@ -141,7 +140,7 @@
 
           // Change redirection URL to main.html for customers
           button.onclick = function () {
-            window.location.href = 'Main.html';
+            window.location.href = 'main.html';
           };
         } else if (userType === 'businessOwner') {
           // Keep the default icon for business owners
@@ -502,7 +501,7 @@
 
           const userName = document.createElement("p");
           userName.className = "text-[#0b161e] text-base font-medium leading-normal";
-          userName.textContent = review.reviewer; // Access the reviewer address correctly
+          userName.textContent = review.reviewer.length > 10 ? `${review.reviewer.slice(0, 5)}...${review.reviewer.slice(-3)}`: review.reviewer;// Access the reviewer address correctly
           userName.style.fontSize = "0.90em";
 
           // Star Rating
