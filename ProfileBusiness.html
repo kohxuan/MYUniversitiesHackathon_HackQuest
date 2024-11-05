@@ -180,9 +180,9 @@
       contract = new ethers.Contract(contractAddress, abi, signer);
 
       const ownerAddress = await signer.getAddress(); // Get the current wallet address
-
+      const truncatedAddress = `${ownerAddress.slice(0, 6)}...${ownerAddress.slice(-4)}`;
       // Display the wallet address on the page
-      document.getElementById("wallet-address").textContent = ownerAddress;
+      document.getElementById("wallet-address").textContent = truncatedAddress;
 
       await getOwnerDetails(ownerAddress);
       await getOwnerRatingAndReviews(ownerAddress); // Fetch ratings and reviews
@@ -361,7 +361,7 @@
         // Customer's Wallet Address
         const userName = document.createElement("p");
         userName.className = "text-[#1C160C] text-lg font-semibold leading-tight line-clamp-1";
-        userName.textContent = review.reviewer; // Access the reviewer address correctly
+        userName.textContent = review.reviewer.length > 10 ? `${review.reviewer.slice(0, 5)}...${review.reviewer.slice(-3)}` : review.reviewer;// Access the reviewer address correctly // Access the reviewer address correctly
         userName.style.fontSize = "0.85em";
 
         // Star Rating
