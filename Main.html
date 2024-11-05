@@ -74,7 +74,7 @@
           </button>
           <input id="storeSearch"="Search Store"
             class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#1C160C] focus:outline-0 focus:ring-0 border-none bg-[#F4EFE6] focus:border-none h-full placeholder:text-[#A18249] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-            value="" />
+            value="" onkeypress="checkEnter(event)" />
         </div>
       </label>
     </div>
@@ -100,7 +100,7 @@
           </button>
           <input id="addressSearch" placeholder="Enter address"
             class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#1C160C] focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-[#A18249] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-            value="" />
+            value="" onkeypress="checkEnter(event)" />
         </div>
       </label>
     </div>
@@ -111,6 +111,12 @@
     </div>
 
     <script>
+      function checkEnter(event) {
+        // Check if the pressed key is Enter (key code 13)
+        if (event.key === 'Enter') {
+          filterOwners(); // Call the filter function
+        }
+      }
       // Function to get the user role from local storage
       function getUserRole() {
         return localStorage.getItem('userRole');
@@ -320,7 +326,6 @@
 
         displayOwners(filteredOwners); // Display filtered owners
         if (filteredOwners.length > 0) {
-          alert(`Found ${filteredOwners.length} owner(s) matching your search!`);
         } else {
           alert('No owners found matching your search criteria.');
         }
