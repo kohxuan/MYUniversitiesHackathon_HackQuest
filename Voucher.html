@@ -11,6 +11,26 @@
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.umd.min.js"></script>
+  <style>
+    .redeem-button:disabled {
+      background-color: #d3d3d3;
+      /* Lighter grey for a softer look */
+      border: 1px solid #a0a0a0;
+      /* A border to give it definition */
+      cursor: not-allowed;
+      color: #ffffff;
+      /* White text for contrast */
+      opacity: 0.7;
+      /* Slight transparency for a more elegant effect */
+    }
+
+    .redeem-button:disabled:hover {
+      background-color: #d3d3d3;
+      /* Keep the same background on hover */
+      opacity: 0.6;
+      /* Darken slightly on hover for feedback */
+    }
+  </style>
 </head>
 
 <body>
@@ -33,26 +53,16 @@
       <div class="flex w-12 items-center justify-end">
 
         <!-- Profile -->
-        <div class="flex w-12 items-center justify-end">
-          <!-- Profile -->
-          <button onclick="window.location.href='ProfileCust.html'"
-            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 bg-transparent text-[#1C160C] gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
-            <div class="text-[#1C160C]" data-icon="UserCircle" data-size="24px" data-weight="regular">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor"
-                viewBox="0 0 256 256">
-                <path
-                  d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z">
-                </path>
-              </svg>
-            </div>
-          </button>
+        <div class="flex items-center text-[#A18249] font-normal leading-tight" style="font-size: 12px;">
+          <p>TOKENS:&nbsp;</p>
+          <span id="customer-points">0</span>
         </div>
       </div>
     </div>
 
     <!-- Voucher 1 -->
     <div class="bg-cover bg-center flex items-center rounded-xl p-4 shadow-lg m-4 relative h-32"
-      style='background-image: url("dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
+      style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
       <div class="flex flex-col justify-between h-full text-white flex-grow">
         <p class="text-4xl font-bold leading-tight">RM1</p>
         <p class="text-xs font-medium">*Valid for 3 months</p>
@@ -60,7 +70,7 @@
       <!-- Right side box for Required Tokens and Redeem button -->
       <div class="absolute right-0 flex items-center h-full w-[150px] bg-[#A18249] border-l border-white rounded-r-xl">
         <div class="flex flex-col items-center w-full justify-center">
-          <span class="text-white text-sm mb-2">10 tokens</span> <!-- Add margin-bottom to Required Tokens -->
+          <span class="text-white text-sm mb-2">10 Tokens</span> <!-- Add margin-bottom to Required Tokens -->
           <button data-voucher="1"
             class="redeem-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">
             <span class="truncate">Redeem</span>
@@ -74,12 +84,12 @@
       style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
       <div class="flex flex-col justify-between h-full text-white flex-grow">
         <p class="text-4xl font-bold leading-tight">RM3</p>
-        <p class="text-xs font-medium">*Terms and conditions apply</p>
+        <p class="text-xs font-medium">*Valid for 3 months</p>
       </div>
       <!-- Right side box for Required Tokens and Redeem button -->
       <div class="absolute right-0 flex items-center h-full w-[150px] bg-[#A18249] border-l border-white rounded-r-xl">
         <div class="flex flex-col items-center w-full justify-center">
-          <span class="text-white text-sm mb-2">Required Tokens: 28</span> <!-- Add margin-bottom to Required Tokens -->
+          <span class="text-white text-sm mb-2">28 Tokens</span> <!-- Add margin-bottom to Required Tokens -->
           <button data-voucher="2"
             class="redeem-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">
             <span class="truncate">Redeem</span>
@@ -93,12 +103,12 @@
       style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
       <div class="flex flex-col justify-between h-full text-white flex-grow">
         <p class="text-4xl font-bold leading-tight">RM5</p>
-        <p class="text-xs font-medium">*Terms and conditions apply</p>
+        <p class="text-xs font-medium">*Valid for 3 months</p>
       </div>
       <!-- Right side box for Required Tokens and Redeem button -->
       <div class="absolute right-0 flex items-center h-full w-[150px] bg-[#A18249] border-l border-white rounded-r-xl">
         <div class="flex flex-col items-center w-full justify-center">
-          <span class="text-white text-sm mb-2">Required Tokens: 46</span> <!-- Add margin-bottom to Required Tokens -->
+          <span class="text-white text-sm mb-2">46 Tokens</span> <!-- Add margin-bottom to Required Tokens -->
           <button data-voucher="3"
             class="redeem-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">
             <span class="truncate">Redeem</span>
@@ -112,12 +122,12 @@
       style='background-image: url("https://cdn.usegalileo.ai/sdxl10/dfc556b0-95a9-43ac-b451-72e92434d0d2.png");'>
       <div class="flex flex-col justify-between h-full text-white flex-grow">
         <p class="text-4xl font-bold leading-tight">RM10</p>
-        <p class="text-xs font-medium">*Terms and conditions apply</p>
+        <p class="text-xs font-medium">*Valid for 3 months</p>
       </div>
       <!-- Right side box for Required Tokens and Redeem button -->
       <div class="absolute right-0 flex items-center h-full w-[150px] bg-[#A18249] border-l border-white rounded-r-xl">
         <div class="flex flex-col items-center w-full justify-center">
-          <span class="text-white text-sm mb-2">Required Tokens: 92</span> <!-- Add margin-bottom to Required Tokens -->
+          <span class="text-white text-sm mb-2">92 Tokens</span> <!-- Add margin-bottom to Required Tokens -->
           <button data-voucher="4"
             class="redeem-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">
             <span class="truncate">Redeem</span>
@@ -147,10 +157,45 @@
           // Set up contract instance
           contract = new ethers.Contract(contractAddress, abi, signer);
 
-          setupRedeemButtons();
+          // Display token balance
+          await displayCustomerPoints();
 
+          // Set up redeem buttons
+          setupRedeemButtons();
         } else {
           alert("Please install MetaMask to use this feature.");
+        }
+      }
+
+      const voucherRequirements = {
+        1: 10,   // Tokens needed for Voucher 1
+        2: 28,   // Tokens needed for Voucher 2
+        3: 46,   // Tokens needed for Voucher 3
+        4: 92    // Tokens needed for Voucher 4
+      };
+
+      async function displayCustomerPoints() {
+        try {
+          const walletAddress = await signer.getAddress();
+          const points = await contract.getCustomerPoints(walletAddress);
+          document.getElementById("customer-points").innerText = points;
+
+          // Check points and enable/disable buttons accordingly
+          const buttons = document.querySelectorAll(".redeem-button");
+          buttons.forEach((button) => {
+            const voucherType = button.getAttribute("data-voucher");
+            const requiredTokens = voucherRequirements[voucherType];
+
+            if (points < requiredTokens) {
+              button.disabled = true;  // Disable the button if not enough tokens
+            } else {
+              button.disabled = false; // Enable if enough tokens
+            }
+          });
+
+        } catch (error) {
+          console.error("Error fetching customer points:", error);
+          alert("Failed to fetch customer points. Please try again.");
         }
       }
 
@@ -170,30 +215,29 @@
           alert(`Transaction sent! Waiting for confirmation...`);
 
           const receipt = await tx.wait();
-
           const voucherRedeemedEvent = receipt.logs.find(
             log => log.topics[0] === ethers.id("VoucherRedeemed(address,string,uint256,uint256)")
           );
 
           if (voucherRedeemedEvent) {
             const decodedLog = contract.interface.parseLog(voucherRedeemedEvent);
-            const voucherCode = decodedLog.args.voucherCode;
             const pointsUsed = decodedLog.args.pointsUsed;
-
             alert(`Voucher successfully redeemed!\nPoints used: ${pointsUsed}\nPlease check your profile for the voucher details.`);
 
-            // After redemption, redirect to ProfileCust.html where vouchers and points are refreshed
+            // Refresh customer points after redemption
+            await displayCustomerPoints();
+
+            // Optionally, redirect to ProfileCust.html to show updated voucher list
             window.location.href = `ProfileCust.html`;
           } else {
             alert("Voucher redeemed, but couldn't retrieve the voucher code. Please check your transaction history.");
           }
 
         } catch (error) {
-          console.error(error);
+          console.error("Error redeeming voucher:", error);
           alert("Error redeeming voucher. Please try again.");
         }
       }
-
 
       window.onload = init;
     </script>
