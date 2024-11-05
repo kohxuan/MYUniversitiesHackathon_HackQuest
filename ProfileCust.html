@@ -142,8 +142,8 @@
                 Wallet Address
               </p>
               <!-- Wallet Address -->
-              <p class="text-[#1C160C] text-[22px] font-normal leading-tight tracking-[-0.015em]">
-                <span id="walletAddress"  style="font-size:15px; word-wrap: break-word; word-break: break-all;"></span>
+              <p class="text-[#1C160C] text-[16px] font-normal leading-tight tracking-[-0.015em]">
+                <span id="walletAddress"></span>
               </p>
               <!-- Token Balance Section -->
               <div class="flex items-center">
@@ -243,7 +243,8 @@
           ];
 
           const walletAddress = await signer.getAddress();
-          document.getElementById("walletAddress").innerText = walletAddress;
+          const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+          document.getElementById("walletAddress").innerText = truncatedAddress;
           // Initialize the contract
           userRegistration = new ethers.Contract(contractAddress, abi, signer);
 
