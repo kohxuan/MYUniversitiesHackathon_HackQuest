@@ -40,16 +40,8 @@
       <div class="flex p-4 @container">
         <div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
           <div class="flex gap-4">
-            <div class="bg-center bg-no-repeat aspect-square rounded-full min-h-32 w-32"
-              style="width: 128px; height: 128px; display: flex; justify-content: center; align-items: center; background-color: rgb(242, 182, 2); border-radius: 50%;">
-              <svg width="100%" height="100%" viewBox="0 0 16 16" style="border-radius: 50%;">
-                <rect x="0" y="0" width="16" height="16"
-                  transform="translate(-4.6865175162859245 -2.135071161793135) rotate(346.3 8 8)" fill="#FA8E00"></rect>
-                <rect x="0" y="0" width="16" height="16"
-                  transform="translate(-7.448079604971012 1.8158573113146483) rotate(298.1 8 8)" fill="#2353E1"></rect>
-                <rect x="0" y="0" width="16" height="16"
-                  transform="translate(9.57407191641924 -6.247814235492595) rotate(483.0 8 8)" fill="#FB1849"></rect>
-              </svg>
+            <div class="flex-shrink-0">
+              <img id="storeImage" class="w-32 h-32 bg-center bg-no-repeat bg-cover rounded-xl" alt="Store Image" />
             </div>
 
             <div class="flex flex-col justify-center">
@@ -192,12 +184,14 @@
     // Fetch owner details like name, location, contact
     async function getOwnerDetails(ownerAddress) {
       try {
-        const [name, location, contactNumber, registrationNo] =
+        const [name, location, contactNumber, registrationNo, ipfsHash] =
           await contract.getOwnerDetails(ownerAddress);
         document.getElementById("businessName").textContent = `${name}`;
         document.getElementById("businessLocation").textContent = `${location}`;
         document.getElementById("contact-no").textContent = `${contactNumber}`;
         document.getElementById("reg-no").textContent = `${registrationNo}`;
+        const ipfsGateway = "https://gateway.pinata.cloud/ipfs/";
+        document.getElementById("storeImage").src = ipfsGateway + ipfsHash;
       } catch (error) {
         console.error("Error fetching owner details:", error);
       }
