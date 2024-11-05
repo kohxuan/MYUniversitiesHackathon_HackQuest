@@ -192,7 +192,7 @@
 
       <!-- Recent Purchase -->
       <h3 class="text-[#1C160C] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Recent Purchase</h3>
-      <div id="verificationDetails" class="flex items-center gap-4 bg-[#FFFFFF] px-4 min-h-[20px] py-2 justify-between">
+      <div id="verificationDetails" class="flex items-center grid grid-cols-1 gap-2 bg-[#FFFFFF] px-2 min-h-[20px] py-2 justify-between">
       </div>
 
       <!-- Log Out -->
@@ -351,8 +351,14 @@
                                     <p class="text-[#A18249] text-sm font-normal leading-normal line-clamp-2">${purchaseDate.toLocaleString()}</p>
                                 </div>
                             </div>
-                            </div>
-                            ${createReviewButton(owner, verificationCode)} <!-- Add the review button here -->
+                            <div class="shrink-0 ml-auto">
+                            <button
+                              onclick="goToReviewPage('${verificationCode}')" class="leave-review-btn flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-medium leading-normal w-fit"
+                              data-owner="${owner}" data-code="${verificationCode}">
+                              <span class="truncate">Review</span>
+                            </button>
+                          </div>
+                          </div>
                         `;
               } catch (error) {
                 console.error(`Error getting details for owner ${owner}:`, error);
@@ -372,18 +378,6 @@
           console.error("Error in displayOwnerDetails:", error);
           document.getElementById("verificationDetails").innerHTML = "<p class='text-center text-red-500'>Error retrieving owner details. See console for more information.</p>";
         }
-      }
-
-      function createReviewButton(owner, verificationCode) {
-        return `
-    <div class="shrink-0 ml-auto">
-      <button
-        onclick="goToReviewPage('${verificationCode}')" class="leave-review-btn flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#F4EFE6] text-[#1C160C] text-sm font-medium leading-normal w-fit"
-        data-owner="${owner}" data-code="${verificationCode}">
-        <span class="truncate">Review</span>
-      </button>
-    </div>
-  `;
       }
 
       function goToReviewPage(verificationCode) {
