@@ -227,7 +227,7 @@
           provider = new ethers.BrowserProvider(window.ethereum); // Initialize the provider
           signer = await provider.getSigner();                    // Get the signer
 
-          const contractAddress = "0x9d63F9bEd315aCD96B5a4e5284FBDCa131262c22"; // Contract address
+          const contractAddress = "0x3192a3a363475f6b1811B962161565827Dc62Af9"; // Contract address
           const abi = [
             "function getCustomerPoints(address customer) public view returns (uint256)",
             "function redeemVoucher(uint256 voucherType) public",
