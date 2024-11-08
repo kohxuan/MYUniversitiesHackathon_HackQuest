@@ -59,6 +59,7 @@ contract UserRegistration {
     event VerificationCodeIssued(address indexed owner, address indexed customer, string code);
     event ReviewSubmitted(address indexed customer, address indexed owner, uint256 rating, string description, uint256 reviewTime);
     event VoucherRedeemed(address indexed customer, string voucherCode, uint256 pointsUsed, uint256 voucherType);
+    event DebugLog(bool isIssued);
  
     function registerCustomer() public {
         require(!registeredCustomers[msg.sender].isRegistered, "Customer already registered");
@@ -164,6 +165,7 @@ contract UserRegistration {
     }
 
     function getVerificationCode(address owner) public view returns (string memory) {
+        emit DebugLog(issuedCodes[owner][msg.sender].isIssued); // Log if the code is issued
         require(issuedCodes[owner][msg.sender].isIssued, "No verification code issued to this customer");
         require(!isCodeExpired(owner, msg.sender), "Verification code has expired"); // Check if the code is expired
         return issuedCodes[owner][msg.sender].code;
