@@ -129,7 +129,7 @@
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
 
-        const contractAddress = "0xb0d498Cd2D0EDE81c5857fd38837f3F5409FE385";
+        const contractAddress = "0xB911E95BF740A883eb335A835D3196f9De630308";
         const abi = [
           "function getVerificationCode(address owner) public view returns (string memory)",
           "function getOwnerDetails(address user) public view returns (string memory name, string memory location, string memory contactNumber, string memory registrationNo, string memory ipfsHash)",
