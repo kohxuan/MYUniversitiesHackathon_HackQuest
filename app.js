@@ -20,7 +20,7 @@ async function init() {
         signer = await provider.getSigner();
 
         // Address of the deployed ReputationSystem contract
-        const contractAddress = "0xb0d498Cd2D0EDE81c5857fd38837f3F5409FE385";  // Replace with your contract address
+        const contractAddress = "0xB911E95BF740A883eb335A835D3196f9De630308";  // Replace with your contract address
 
         // ABI (Application Binary Interface) of the ReputationSystem contract
         const contractABI = [
