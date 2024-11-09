@@ -1,11 +1,10 @@
 require("@nomicfoundation/hardhat-toolbox");
-
 module.exports = {
     solidity: "0.8.0",
     networks: {
-     sepolia: {
-                url: "https://linea-sepolia.infura.io/v3/4ecc4901d5e44fc6ac9d10b0ac352f24",
-                accounts: ["db784486dbc722a9f97464e42eaeded73defb10f320d6c400fa6ad52046cea48"]
-            }
+        sepolia: {
+            url: "https://linea-sepolia.infura.io/v3/3556c30ffd194e499a5fef172e44b3c4",
+            accounts: ["120517da0287b9dd1c35a8f35303fc4854ebc92ea9ed5820bb42da1df41d56c6"]
+        }
     }
 };
