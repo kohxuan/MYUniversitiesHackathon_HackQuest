@@ -181,8 +181,6 @@ contract UserRegistration {
         require(rating >= 0 && rating <= 5, "Rating must be between 0 and 5");
         require(issuedCodes[ownerAddress][msg.sender].isIssued, "No valid verification code issued to this customer");
         require(!isCodeExpired(ownerAddress, msg.sender), "Verification code has expired");
-        require(block.timestamp >= lastReviewTime[msg.sender][ownerAddress] + CODE_EXPIRY_TIME, 
-                "You can only leave a review for this owner once every 24 hours");
         // Record the review
         Review memory newReview = Review(msg.sender, rating, description, block.timestamp);
         ownerReviews[ownerAddress].push(newReview);
@@ -191,7 +189,6 @@ contract UserRegistration {
         registeredCustomers[msg.sender].points += POINTS_PER_REVIEW;
         emit ReviewSubmitted(msg.sender, ownerAddress, rating, description, block.timestamp);
         issuedCodes[ownerAddress][msg.sender].isIssued = false; // Mark as used
-        lastReviewTime[msg.sender][ownerAddress] = block.timestamp;
     // Remove the owner from the customer's list of owners who issued verification codes
         address[] storage owners = customerToOwners[msg.sender]; // Get the list of owners for this customer
         for (uint i = 0; i < owners.length; i++) {
