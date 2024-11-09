@@ -159,7 +159,7 @@
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
-      const contractAddress = "0x49c173aa408180FD93039E44084B6C00B169436C";
+      const contractAddress = "xf1096B67D436e664ddC837368760d043A392A078";
       const abi = [
         "function issueVerificationCode(address customer) public",
         "function getOwnerDetails(address user) public view returns (string memory name, string memory location, string memory contactNumber, string memory registrationNo, string memory ipfsHash)",
