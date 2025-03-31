@@ -1,4 +1,4 @@
-# <img src="https://github.com/user-attachments/assets/ac889622-af09-4910-baca-10f1d3f296e2" width="75px" height="45px" > 🌟 Trustify - Decentralized Reputation System
+# <img src="https://github.com/user-attachments/assets/ac889622-af09-4910-baca-10f1d3f296e2" width="80px" height="45px" > 🌟 Trustify - Decentralized Reputation System
 The **Trustify** platform is a decentralized reputation system designed for local businesses, utilizing blockchain technology to ensure transparent and reliable customer-business interactions.
 <br><br>
 
@@ -67,4 +67,13 @@ Replace `<repository-url>` with your actual repository URL and `<your-project-di
 ### 📝 Note
 - Ensure your MetaMask is connected to the Sepolia network.
 - If you’re using Sepolia, make sure you have some test ETH in your MetaMask wallet.
+<br>
+
+### 📄 Project Submission
+- View the project submission on [HackQuest](https://www.hackquest.io/projects/trustify).
+<br>
+
+### 📊 Presentation Slides
+- [Preliminary Submission Slides](https://www.canva.com/design/DAGjUJoNdM0/eW_LUvE97OQLiPeyuuuqVA/view?utm_content=DAGjUJoNdM0&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h7f6d8e42b1)
+- [Finalist Submission Slides](https://www.canva.com/design/DAGjUCTuq1Q/i2HzrBAg2g0vAnePmKin_Q/view?utm_content=DAGjUCTuq1Q&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h29ec484e88)
 <br>
