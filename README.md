@@ -10,6 +10,19 @@ The **Trustify** platform is a decentralized reputation system designed for loca
 - **Decentralized Ecosystem**: Secure and transparent interactions for building credible reputations.
 <br>
 
+### 🏆 Results
+We are proud to announce that our team, **LogiCode**, achieved significant recognition in the [**MY Universities Hackathon 2024**](https://www.hackquest.io/hackathons/MY-Universities-Hackathon). Our project was ranked:
+- **Finalist** out of 170+ participants.
+- **Team Members:**
+   - [Koh Su Xuan](https://github.com/kohxuan) - Team Leader
+   - [Ong Yi Yan](https://github.com/ONGYIYAN)
+   - [Tang Yan Qing](https://github.com/yan-qing09)
+<br>
+
+### ⭐ Status & Recognition 
+*   Received a [Certificate](https://github.com/kohxuan/MYUniversitiesHackathon_HackQuest/blob/main/docs/Certificate.pdf) as the recognition of the hackathon.
+<br>
+
 ### 🛠️ Technical Overview
 - **Solidity**: Smart contracts for blockchain interactions.
   - **UserRegistration Contract**: Manages customer and owner registrations, review submissions, and voucher redemptions.
